@@ -6,7 +6,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: ' https://github.com/celinechege/8.2CDevSecOps.git'
+                git branch: 'main', url: ' https://github.com/celinechege/8.2CDevSecOp.git'
             }
         }
         stage('Install Dependencies') {
