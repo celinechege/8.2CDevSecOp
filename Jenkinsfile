@@ -29,6 +29,23 @@ pipeline {
                 sh 'npm audit || true'
             }
         }
+
+        stage('SonarCloud Analysis') {
+            steps {
+                withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]) {
+                sh '''
+                # Download SonarScanner CLI
+                curl -sSLo sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip
+                unzip -o sonar-scanner.zip
+                export PATH=$PWD/sonar-scanner-5.0.1.3006-linux/bin:$PATH
+
+                # Run SonarScanner
+                sonar-scanner
+                '''
+                }
+            }
+        }
+
     }
 }
 
