@@ -32,20 +32,25 @@ pipeline {
 
        stage('SonarCloud Analysis') {
     steps {
-        withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]) {
-            sh '''
-            curl -sSLo sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-macosx.zip
-            unzip -o sonar-scanner.zip
-            export PATH=$PWD/sonar-scanner-5.0.1.3006-macosx/bin:$PATH
+    withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]) {
+      sh '''
+        export SONAR_SCANNER_VERSION=7.0.2.4839
+        export SONAR_SCANNER_HOME=$HOME/.sonar/sonar-scanner-$SONAR_SCANNER_VERSION-macosx-x64
+        curl --create-dirs -sSLo $HOME/.sonar/sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-$SONAR_SCANNER_VERSION-macosx-x64.zip
+        unzip -o $HOME/.sonar/sonar-scanner.zip -d $HOME/.sonar/
+        export PATH=$SONAR_SCANNER_HOME/bin:$PATH
+        export SONAR_SCANNER_OPTS="-server"
 
-            export SONAR_TOKEN=$SONAR_TOKEN
-            sonar-scanner
-            '''
-        }
+        sonar-scanner \
+          -Dsonar.organization=celinechege \
+          -Dsonar.projectKey=celinechege_8.2CDevSecOp \
+          -Dsonar.sources=. \
+          -Dsonar.host.url=https://sonarcloud.io \
+          -Dsonar.login=$SONAR_TOKEN
+      '''
     }
-}
-
-
+  }
+  }
 
     }
 }
