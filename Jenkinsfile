@@ -30,21 +30,22 @@ pipeline {
             }
         }
 
-        stage('SonarCloud Analysis') {
-            steps {
-                withCredentials([string(credentialsId: '281be69cf4e0b0a4ea61aa5e0252e390d64d016c', variable: '281be69cf4e0b0a4ea61aa5e0252e390d64d016c')]) {
-                sh '''
-                # Download SonarScanner CLI
-                curl -sSLo sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip
-                unzip -o sonar-scanner.zip
-                export PATH=$PWD/sonar-scanner-5.0.1.3006-linux/bin:$PATH
+       stage('SonarCloud Analysis') {
+    steps {
+        withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]) {
+            sh '''
+            curl -sSLo sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-macosx.zip
+            unzip -o sonar-scanner.zip
+            export PATH=$PWD/sonar-scanner-5.0.1.3006-macosx/bin:$PATH
 
-                # Run SonarScanner
-                sonar-scanner
-                '''
-                }
-            }
+            export SONAR_TOKEN=$SONAR_TOKEN
+            sonar-scanner
+            '''
         }
+    }
+}
+
+
 
     }
 }
